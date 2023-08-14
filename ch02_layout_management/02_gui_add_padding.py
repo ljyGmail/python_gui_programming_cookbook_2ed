@@ -4,14 +4,13 @@ from tkinter import scrolledtext
 
 win = tk.Tk()
 
-win.title('Adding widgets in a loop')
+win.title('LabelFrame column one')
 
 def click_me():
     action.configure(text='Hello ' + name.get() + ' ' + number.get())
 
 # Create a Label
 ttk.Label(win, text='Enter a name:').grid(column=0, row=0)
-
 # Adding a Textbox Entry widget
 name = tk.StringVar()
 name_entered = ttk.Entry(win, width=12, textvariable=name)
@@ -21,10 +20,14 @@ name_entered.grid(column=0, row=1)
 ttk.Label(win, text='Choose a number:').grid(column=1, row=0)
 # Adding a Combobox
 number = tk.StringVar()
-number_chosen = ttk.Combobox(win, width=12, textvariable=number, state='readonly')
+number_chosen = ttk.Combobox(win, width=12, textvariable=number)
 number_chosen['value'] = tuple(range(1, 6))
 number_chosen.grid(column=1, row=1)
-number_chosen.current(3)
+number_chosen.current(4)
+
+# Adding a Button
+action = ttk.Button(win, text='Click Me!', command=click_me)
+action.grid(column=2, row=1)
 
 # Creating three checkbuttons
 chVarDis = tk.IntVar()
@@ -61,38 +64,42 @@ chVarEn.trace('w', lambda unused0, unused1, unused2: checkCallback())
 # First we change our Radiobutton global variables into a list
 colors = ['Blue', 'Gold', 'Red']
 
-# We have also changed the callback function to be zero-based, using the list
-# instead of module-level global variables
-# Radiobutton Callback
 def radCall():
     radSel = radVar.get()
-    if radSel == 0:
-        win.configure(background=colors[0])
-    elif radSel == 1:
-        win.configure(background=colors[1])
-    elif radSel == 2:
-        win.configure(background=colors[2])
+    win.configure(background=colors[radSel])
 
-# create three Radiobuttons using one variable
+
+# Create three Radiobuttons using one variable
 radVar = tk.IntVar()
-
 # Next we are selecting a non-existing index value for radVar
 radVar.set(99)
 
-# Now we are creating all three Radiobutton widgets within one loop
+# Nw we are creating all three Radiobutton widgets within one loop
 for col in range(3):
     curRad = tk.Radiobutton(win, text=colors[col], variable=radVar, value=col, command=radCall)
     curRad.grid(column=col, row=5, sticky=tk.W)
-
-# Adding a Button
-action = ttk.Button(win, text='Click Me!', command=click_me)
-action.grid(column=2, row=1)
 
 # Using a scrolled Text control
 scroll_w = 40
 scroll_h = 3
 scr = scrolledtext.ScrolledText(win, width=scroll_w, height=scroll_h, wrap=tk.WORD)
 scr.grid(column=0, columnspan=3)
+
+# Create a container to hold labels
+buttons_frame = ttk.LabelFrame(win, text=' Labels in a Frame ')
+# remove the name of LabelFrame to see the effect padx has on the position of labels
+# buttons_frame = ttk.LabelFrame(win, text='')
+buttons_frame.grid(column=0, row=7, padx=20, pady=40)
+
+# Place labels into the container element
+ttk.Label(buttons_frame, text='Label1').grid(column=0, row=0, sticky=tk.W)
+# make the label longer to see the spacing to the right
+# ttk.Label(buttons_frame, text='Label1 -- sooooo much looooooooonger...').grid(column=0, row=0, sticky=tk.W)
+ttk.Label(buttons_frame, text='Label2').grid(column=0, row=1, sticky=tk.W)
+ttk.Label(buttons_frame, text='Label3').grid(column=0, row=2, sticky=tk.W)
+
+for child in buttons_frame.winfo_children():
+    child.grid_configure(padx=8, pady=4)
 
 # Place cursor into name Entry
 name_entered.focus()
